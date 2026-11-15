@@ -1,3 +1,5 @@
+# LogWatch
+
 # Project Overview
 
 ```mermaid
