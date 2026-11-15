@@ -62,6 +62,42 @@ ServerPort::ServerPort(int port) {
     freeaddrinfo(servinfo);
 }
 
+int ServerPort::Listener() {
+    int extracted_id = 0;
+    int extracted_type = 0;
+
+    // 1. ID extrahieren
+    size_t id_pos = raw.find("\"id\"");
+    if (id_pos != std::string::npos) {
+        size_t colon_pos = raw.find(":", id_pos);
+        size_t end_pos = raw.find_first_of(",}", colon_pos);
+        if (colon_pos != std::string::npos && end_pos != std::string::npos) {
+            std::string val = raw.substr(colon_pos + 1, end_pos - colon_pos - 1);
+            extracted_id = val;
+        }
+    }
+
+    // 2. Type extrahieren
+    size_t type_pos = raw.find("\"type\"");
+    if (type_pos != std::string::npos) {
+        size_t colon_pos = raw.find(":", type_pos);
+        size_t end_pos = raw.find_first_of(",}", colon_pos);
+        if (colon_pos != std::string::npos && end_pos != std::string::npos) {
+            std::string val = raw.substr(colon_pos + 1, end_pos - colon_pos - 1);
+            extracted_type = std::stoi(val); // stoi : str -> int
+        }
+    }
+
+    std::cout << "[C++] Empfangen - ID: " << extracted_id << ", Type: " << extracted_type << std::endl;
+    this->buffer = extracted_id
+    return extracted_type;
+}
+
 ServerPort::~ServerPort() {
     close(this->socket_fd);
+}
+
+//getter && setter
+std::string ServerPort::get_buffer() {
+        return this->buffer;
 }

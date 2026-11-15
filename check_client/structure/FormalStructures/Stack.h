@@ -16,6 +16,7 @@ public:
     Stack(int size);
     //getter && setter
     Item get_top();
+    void set_max_size(int max_size);
     //baisc
     void push(Item item);
     Item pop();

@@ -57,3 +57,7 @@ bool Stack::clean() {
     }
     std::cout << "Stack cleard now Items :" + this->size + "| in Stack";
 }
+//getter && setter
+void set_max_size(int max_size) {
+    this->max_size = max_size;
+}

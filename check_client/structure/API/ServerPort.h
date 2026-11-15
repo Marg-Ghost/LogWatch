@@ -23,8 +23,11 @@ public:
     ServerPort(int port);
     ~ServerPort();
 
-    std::optional<std::string> poll_json(int timeout_ms = 0); // json trenner '\n'
+    uint8_t Listener();
     void send_request();
+
+    //getter && setter
+    std::string get_buffer();
 };
 
 

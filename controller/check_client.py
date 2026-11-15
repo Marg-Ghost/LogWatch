@@ -1,5 +1,7 @@
+import json
 import sqlite3
 import os
+import socket
 
 class LinkedList:
     def __init__(self):
@@ -95,6 +97,10 @@ class Node:
             return self.next.get_highest_importance_node(highest, highest_node)
         else:
             return highest_node
+"""
+Request-types to cpp-Server:
+- 1 = check_all_server
+"""
 
 def check_all_server():
     conn = sqlite3.connect("data/Docker.db")
@@ -108,7 +114,23 @@ def check_all_server():
     linked_list = linked_list.sort_by_importance()
 
     # For each Request to cpp socket:
+    HOST = "127.0.0.1"
+    PORT = 9876
 
+    current = linked_list.head
+    while current not None:
+        payload = {"id": current.id, "type" : 1}
+        json_payload = json.dumps(payload)
 
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((HOST, PORT))
+                s.sendall(json_payload.encode("utf-8"))
+
+        except Exception as e:
+            print(f"Error | connecting to server with ID {current.id}: {e}")
 
     conn.close()
+
+def check_all_server_complete():
+    ...
