@@ -1,5 +1,6 @@
 # LogWatch
-<img width="500" height="500" alt="logo2" src="https://github.com/user-attachments/assets/91a3d926-7b68-427e-b0e3-d565e544e4bf" />
+<img width="960" height="540" alt="Unbenannet" src="https://github.com/user-attachments/assets/dc418df8-c71d-4fbb-9b98-21d395588277" />
+
 
 # Project Overview
 
