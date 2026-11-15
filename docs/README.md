@@ -1,4 +1,5 @@
 # LogWatch
+<img width="5000" height="5000" alt="logo2" src="https://github.com/user-attachments/assets/91a3d926-7b68-427e-b0e3-d565e544e4bf" />
 
 # Project Overview
 
