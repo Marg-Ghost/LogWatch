@@ -25,6 +25,7 @@ public:
 
     uint8_t Listener();
     void send_request();
+    void back_to_original_controller(int opp_type, int back_to_server);
 
     //getter && setter
     std::string get_buffer();

@@ -2,6 +2,7 @@
 // Created by Admin on 09.11.2026.
 //
 
+#include "Stack.h"
 #include "../logic/Stack.h"
 
 #include "Item.h"
@@ -60,4 +61,10 @@ bool Stack::clean() {
 //getter && setter
 void set_max_size(int max_size) {
     this->max_size = max_size;
+}
+bool Stack::is_empty() {
+    if (top == NULL) {
+        return true;
+    }
+    return false;
 }

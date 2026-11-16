@@ -99,10 +99,12 @@ class Node:
             return highest_node
 """
 Request-types to cpp-Server:
-- 1 = check_all_server
+vgl. Requesttypes : docs/Server_to_Docker.md
+- 1 = quickchecks every container for errors and sends back the result to the database
+- 2 = check if all server running are in the database
 """
 
-def check_all_server():
+def reqeust_type_1():
     conn = sqlite3.connect("data/Docker.db")
     cursor = conn.cursor()
     cursor.execute("SELECT id, importance FROM database_deamon")
@@ -132,5 +134,5 @@ def check_all_server():
 
     conn.close()
 
-def check_all_server_complete():
+def reqeust_type_2():
     ...

@@ -97,6 +97,52 @@ ServerPort::~ServerPort() {
     close(this->socket_fd);
 }
 
+void ServerPort::back_to_original_controller(int opp_type, int back_to_server) {
+    std::string url = "/server_status/basic/answer_type_" + std::to_string(opp_type) + "/" + std::to_string(back_to_server);
+    std::string host = "127.0.0.1";
+    std::string outer_port = "9000";
+    struct addrinfo hints{}, *servinfo;
+    hints.ai_family = AF_UNSPEC;     // IPv4 oder IPv6 egal
+    hints.ai_socktype = SOCK_STREAM; // TCP Strea m
+
+    // Wichtig: KEIN AI_PASSIVE, weil wir hier als Client rausfunken!
+    int status = getaddrinfo("127.0.0.1", "8000", &hints, &servinfo);
+    if (status != 0) {
+        std::cerr << "[C++] getaddrinfo Fehler: " << gai_strerror(status) << std::endl;
+        return;
+    }
+    int sock = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
+    if (sock < 0) {
+        freeaddrinfo(servinfo);
+        return;
+    }
+    if (connect(sock, servinfo->ai_addr, servinfo->ai_addrlen) < 0) {
+        std::cerr << "[C++] Verbindung zum FastAPI-Controller fehlgeschlagen!" << std::endl;
+        close(sock);
+        freeaddrinfo(servinfo);
+        return;
+    }
+
+    freeaddrinfo(servinfo); // Briefkasten dings ->  wieder aufräumen
+    /*
+     * Falls mal jemand aus sienen HTB-lessons kommt und socket Programmierung mit curl verwechselt: <- aka ich selbst
+    * Das -X (bzw. --request) ist nur eine Kommandozeilen-Option von curl – kein Teil des HTTP-Protokolls selbst!
+    * Wenn du im Terminal curl -X POST [http://127.0.0.1:8000/](http://127.0.0.1:8000/)... eintippst, sagt das -X POST dem curl-Programm lediglich:
+    * "Schreibe ganz oben in die allererste Zeile des rohen HTTP-Pakets das Wort POST statt GET."
+    *
+    * Da du in C++ mit Sockets auf der rohen Protokoll-Ebene arbeitest, schreibst du genau diese erste Zeile (die sogenannte Request-Line) selbst
+     */
+    //Minimalen HTTP POST Request abfeuern
+    std::string http_request =
+        "POST " + url + " HTTP/1.1\r\n"
+        "Host: " + host + ":" + std::to_string(port) + "\r\n"
+        "Content-Length: 0\r\n"
+        "Connection: close\r\n\r\n";
+
+    send(sock, http_request.c_str(), http_request.size(), 0);
+    close(sock);
+}
+
 //getter && setter
 std::string ServerPort::get_buffer() {
         return this->buffer;

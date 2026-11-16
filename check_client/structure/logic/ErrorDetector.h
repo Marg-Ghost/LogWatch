@@ -26,8 +26,19 @@ private:
     PrefixTree error_tree;
 public:
     ErrorDetector();
+
     //logic
+    /*
+     * Either returns:
+     * -> 0 : no Error break probability == 0
+     * -> 1 : probability != 0 aber muss alle Prüfen
+     * -> 2 : 100% sent 10 str no need for further checks
+     *  -> -1 : Error
+     */
     int detect_string(std::stirng test);
+
+    //getter && setter
+    float get_probability();
 
 };
 

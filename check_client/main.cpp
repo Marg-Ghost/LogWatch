@@ -11,7 +11,9 @@
 #include "structure/API/ServerPort.h"
 
 std::vector<std::string> get_container();
-std::vector<DockerSystem> get_error_messages(std::vector<std::string> docker_deamon);
+float get_error_eval_on_container(std::string docker_name, DockerSystem docker);
+
+
 int main() {
     std::cout<<"Init | cpp-Server Deamon"<<std::endl;
     ServerPort server = ServerPort(9876);
@@ -24,38 +26,102 @@ int main() {
         /*
          * 1 = handels one Checkup of one Docker Container and sents back the result
          */
+        int back_to_server = 0; //every type sends it's type with an according error code back
+
         switch (opp_type) {
+            /*
+             * Hier wird über die Reqeust Typen aus -> Server_to_Docker.md entschieden
+             * somit docht #1-Type ist hier case 1
+             * ...
+             */
             case 1:
                 //json mit der DB vergleichen ID -> In Docker
                 std::string docker_name = database->get_name_from_id(id);
+                //get error probability
                 //Error-Detector for server
-                DockerSystem sytstem = get_error_messages(docker_name);
-                std::vector<std::string> docker_error = get_error_messages(docker_name);
+                DockerSystem docker = DockerSystem(docker_name);
+                docker.fill_stack_with_log();
+                float error_probability = get_error_eval_on_container(docker_name, docker);
 
-                //if error vorhanden wird er in der DB gespeichert, stack übergabe
+                int number_message;
+                if (error_probability < 0.3) {
+                    docker.crop_stack(0);
+                    number_message = 0;
+                    back_to_server = 0;
+                }else if (error_probability < 0.5) {
+                    docker.crop_stack(3);
+                    number_message = 3;
+                    back_to_server = 1;
+                }else if (error_probability < 0.8) {
+                    docker.crop_stack(5);
+                    number_message = 5;
+                    back_to_server = 1;
+                }else if (error_probability > 0.8) {
+                    docker.crop_stack(10);
+                    number_message = 10;
+                    back_to_server = 1;
+                }
+
+                 //if error vorhanden wird er in der DB gespeichert, stack übergabe
                 std::unordered_map<int, std::stirng>errors;
+                for (int i=number_message; i != 0; i--) {
+                    errors[number_message] = docker.get_stack().pop()->get_data();
+                }
                 // in errors kommt dann noch der str rein!
+                //return to http server python
                 database.save_error_entry(id, errors);
+                server.back_to_original_controller(opp_type, back_to_server);
         }
-
-
-
-
-        //return to http server python
+        return 0;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
+float get_error_eval_on_container(std::string docker_name, DockerSystem docker) {
+        ErrorDetector detector;
+    int probability_eval = detector.detect_string(docker.get_stack().pop().get_data());
+    float error_probability = 0.0;
+    switch (probability_eval) {
+        case -1:
+            std::cout<<"ErrorDetector | Error couldn't evaluate Probability"<<std::endl;
+            break;
+        case 0 && 2:
+            error_probability = detector.get_probability();
+            break;
+        case 1:
+            while (docker.get_stack().empty() != true || detector.get_probability() < 1.0) {
+                detector.detect_string(docker.get_stack().pop().get_data());
+            }
+            //just as a safe case
+            if (detector.get_probability() < 1.0) {
+                error_probability = detector.get_probability();
+            }else {
+                error_probability = 1.0;
+            }
+            break;
+    }
+    return error_probability;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 std::vector<std::string> get_container() {
     std::vector<std::string> docker_deamon;
     int dd_len = 0;
@@ -72,54 +138,4 @@ std::vector<std::string> get_container() {
     }
     conainer_list.close();
     return docker_deamon;
-}
-
-DockerSystem get_error_messages(std::vector<std::string> docker_deamon) {
-    DockerSystem docker_return
-
-    std::system("../get_logs/get_logs.sh %s %i", docker_deamon[i].c_str(), 1);
-    std::string filename = "logs_" + docker_deamon[i] + "_data.txt";
-
-    std::ifstream log_list(filename);
-    if (!log_list.is_open()) {
-        std::count << "[Error] : couldn't open the file";
-    }
-    /*
-    *Every line is a singular feedback - Bsp.:
-    *INFO:     127.0.0.1:47126 - "GET / HTTP/1.1" 200 OK
-    *ConnectionError: Failed to connect to Ollama. Please check that Ollama is downloaded, running and accessible. https://ollama.com/download
-    *---------------------------------------------------------------
-    *If current Error ? -> Check bottom message
-    *=> Stack and if top = Error -> Return as Docker its false
-    */
-    Stack error_entires = Stack(10);
-    std::line;
-    while (std::getline(log_list, line)) {
-        Item new_entry = Item(line);
-        error_entires.push(new_entry);
-    }
-    log_list.close();
-
-    //Error Detector : if Error ? 1 : 0
-    ErrorDetector detector;
-    int probability = detector->detect_string(error_entires.pop());
-    if (probability == 0) {
-        error_entires.set_max(0);
-        error_entires.clean();
-        //Docker noch initialisieren
-        docker_return = DockerSystem(error_entires, 0);
-        return docker_return;
-    }else if (probability == 1) {
-        error_entires.set_max(3);
-        error_entires.clean();
-        docker_return = DockerSystem(error_entires, 1);
-    }else if (probability == 2) {
-        error_entires.set_max(5);
-        error_entires.clean();
-        docker_return = DockerSystem(error_entires, 2);
-    }else if (probability == 3) {
-        docker_return = DockerSystem(error_entires, 3);
-    }else {
-        return NULL;
-    }
 }

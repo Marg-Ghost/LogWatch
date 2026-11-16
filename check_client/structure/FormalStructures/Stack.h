@@ -23,6 +23,7 @@ public:
     //custome
     bool full();
     void clean();
+    bool empty();
 };
 
 
