@@ -13,21 +13,29 @@
 std::vector<std::string> get_container();
 std::vector<DockerSystem> get_error_messages(std::vector<std::string> docker_deamon);
 int main() {
-    std::cout<<"Init | cpp-Server Deamon";
+    std::cout<<"Init | cpp-Server Deamon"<<std::endl;
     ServerPort server = ServerPort(9876);
-    Database database = Database("Docker.db");
+    Database database = Database("../data/Docker.db", "docker_deamons");
     while (true) {
         //Reqeust to server from server
         int opp_type = server.Listener();
         std::string id = server.get_buffer();
 
+        /*
+         * 1 = handels one Checkup of one Docker Container and sents back the result
+         */
         switch (opp_type) {
             case 1:
                 //json mit der DB vergleichen ID -> In Docker
-                std::string docker_name = database->get_name_from_id();
+                std::string docker_name = database->get_name_from_id(id);
                 //Error-Detector for server
                 DockerSystem sytstem = get_error_messages(docker_name);
                 std::vector<std::string> docker_error = get_error_messages(docker_name);
+
+                //if error vorhanden wird er in der DB gespeichert, stack übergabe
+                std::unordered_map<int, std::stirng>errors;
+                // in errors kommt dann noch der str rein!
+                database.save_error_entry(id, errors);
         }
 
 

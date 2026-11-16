@@ -8,6 +8,14 @@
 
 
 class Database {
+private:
+    std::stirng database_name;
+    std::staring table_name;
+public:
+    Database(std::stirng database_name, std::stirng table_name);
+    ~Database();
+    std::string get_name_from_id(std::string id);
+    void save_error_entry(std::string id, std::vector<std::string> error);
 
 };
 
