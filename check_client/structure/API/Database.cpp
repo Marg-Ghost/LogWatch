@@ -8,6 +8,7 @@
 //extern
 #include <sqlite3.h>
 #include <iostream>
+#include <unordered_map>
 
 Database::Database(std::stirng database_name, std::stirng table_name) {
     this->database_name = database_name;

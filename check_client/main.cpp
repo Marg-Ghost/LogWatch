@@ -1,7 +1,8 @@
 //external
 #include <iostream>
 #include<fstream>
-#incldue<iostream>
+#include <iostream>
+#include <vector>
 //internal
 #include "structure/API/Database.h"
 #include "structure/logic/ErrorDetector.h"
@@ -36,7 +37,7 @@ int main() {
              */
             case 1:
                 //json mit der DB vergleichen ID -> In Docker
-                std::string docker_name = database->get_name_from_id(id);
+                std::string docker_name = database.get_name_from_id(id);
                 //get error probability
                 //Error-Detector for server
                 DockerSystem docker = DockerSystem(docker_name);
@@ -63,16 +64,16 @@ int main() {
                 }
 
                  //if error vorhanden wird er in der DB gespeichert, stack übergabe
-                std::unordered_map<int, std::stirng>errors;
+                std::unordered_map<int, std::string> errors;
                 for (int i=number_message; i != 0; i--) {
-                    errors[number_message] = docker.get_stack().pop()->get_data();
+                    errors[number_message] = docker.get_stack().pop().get_data();
                 }
                 // in errors kommt dann noch der str rein!
                 //return to http server python
                 database.save_error_entry(id, errors);
                 server.back_to_original_controller(opp_type, back_to_server);
             case 2:
-                std::vector<std::string> docker_deamon = get_container_names();
+                std::vector<std::string> docker_deamon = get_container();
                 //database
                 database.save_docker_name(docker_deamon);
                 server.back_to_original_controller(opp_type, 0);
@@ -112,7 +113,7 @@ std::vector<std::string> get_container_names() {
     std::system("../get_logs/get_container.sh");
     std::ifstream conainer_list("../get_logs/container_list");
     if (!conainer_list.is_open()) {
-        std::count << "[Error] : couldn't open the file";
+        std::cout << "[Error] : couldn't open the file";
     }
 
     std::string line;

@@ -25,7 +25,7 @@ ErrorDetector::ErrorDetector() {
     }
 }
 
-int ErrorDetector::detect_string(std::stirng test) {
+int ErrorDetector::detect_string(std::string test) {
     //get all words to iterate over every one to check for errors
     std::vector<std::string> word_list;
     int wl_size;

@@ -4,7 +4,7 @@
 
 #ifndef AWS_HACKATHAN_STACK_H
 #define AWS_HACKATHAN_STACK_H
-#include "../API/Item.h"
+#include "Item.h"
 
 
 class Stack {
