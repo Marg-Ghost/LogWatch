@@ -71,6 +71,11 @@ int main() {
                 //return to http server python
                 database.save_error_entry(id, errors);
                 server.back_to_original_controller(opp_type, back_to_server);
+            case 2:
+                std::vector<std::string> docker_deamon = get_container_names();
+                //database
+                database.save_docker_name(docker_deamon);
+                server.back_to_original_controller(opp_type, 0);
         }
         return 0;
     }
@@ -101,28 +106,7 @@ float get_error_eval_on_container(std::string docker_name, DockerSystem docker) 
     return error_probability;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-std::vector<std::string> get_container() {
+std::vector<std::string> get_container_names() {
     std::vector<std::string> docker_deamon;
     int dd_len = 0;
     std::system("../get_logs/get_container.sh");
@@ -133,9 +117,24 @@ std::vector<std::string> get_container() {
 
     std::string line;
     while (std::getline(conainer_list, line)) {
-        docker_deamon[dd_len] = line;
+        if (dd_len == 0) {
+            continue;
+        }
+        std::vector<std::string> parts;
+        std::string temp;
+        //Structure ist : CONTAINER ID   IMAGE
+        // somit brauchen wir nur solange zu iteriren bis IMAGE auftaucht
+        for (int i = 0; i < 1; i++) {
+            temp += line[i];
+            if (line[i] == ' ') {
+                parts.push_back(temp);
+                temp = "";
+            }
+        }
+        docker_deamon[dd_len] = parts[1];
         dd_len++;
     }
+
     conainer_list.close();
     return docker_deamon;
 }

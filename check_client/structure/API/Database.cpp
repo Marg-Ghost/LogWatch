@@ -106,6 +106,40 @@ void Database::save_error_entry(std::string id, std::unordered_map<int, std::str
     sqlite3_close(db);
 }
 
+void Database::save_docker_name(std::vector<std::string> docker_names) {
+    sqlite3* db;
+    char* errMessage = 0;
+    int rc = sqlite3_open(this->database_name.c_str(), &db);
+    if (rc) {
+        std::cout << "[C++] Fehler beim Öffnen der Datenbank: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }else {
+        std::cout << "[C++] Erfolgreich mit SQLite-Datenbank verbunden!" << std::endl;
+    }
+    //UPSERT direkt auf Spalten (id, error_message)
+    const char* sql = "INSERT INTO database_deamon (name) VALUES (?);";
+    sqlite3_stmt* stmt = nullptr;
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        std::cerr << "[C++] Prepare Fehler: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    for (const auto& name : docker_names) {
+        sqlite3_bind_text(stmt, 1, name.c_str(), -1, SQLITE_TRANSIENT);
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cerr << "[C++] Execution Fehler: " << sqlite3_errmsg(db) << std::endl;
+        }
+        sqlite3_reset(stmt);
+        sqlite3_clear_bindings(stmt);
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+}
 //checht die Error massage nach poentiellen kritschen char ab, sodass es nicht flsch geseichert wird
 std::string escape_json(const std::string& s) {
     std::string out;

@@ -1,3 +1,4 @@
+import json
 import sqlite3
 
 class Database:
@@ -5,24 +6,52 @@ class Database:
         self.servers = server
         self.table = table
 
-    def get_data_from_database(self, select_collums: list, where_collum: str = None, where_value: str = None) -> dict:
+    def get_data_from_database(self, select_collums: list | str, where_collum: str = None, where_value: str = None) -> dict:
         connection = sqlite3.connect(self.servers)
-        cursor = connection.cursor()
-        query = f"SELECT {', '.join(select_collums)} FROM {self.table}"
-        if where_collum and where_value:
-            query += f" WHERE {where_collum} = ?"
-            cursor.execute(query, (where_value,))
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        connection.close()
+        try:
+            cursor = connection.cursor()
+            columns = ", ".join(select_collums) if isinstance(select_collums, list) else select_collums
+            query = f"SELECT {columns} FROM {self.table}"
+            parameters = ()
+            if where_collum is not None and where_value is not None:
+                query += f" WHERE {where_collum} = ?"
+                parameters = (where_value,)
+            cursor.execute(query, parameters)
+            column_names = [column[0] for column in cursor.description]
+            rows = cursor.fetchall()
+        finally:
+            connection.close()
+
+        data = [dict(zip(column_names, row)) for row in rows]
+        return {"data": data}
+
+    def get_docker_container_data(self) -> dict[str, list[dict]]:
+        connection = sqlite3.connect(self.servers)
+        connection.row_factory = sqlite3.Row
+        try:
+            rows = connection.execute(f"""
+                SELECT d.id, d.name, d.status, d.importance, d.type, d.last_updated, d.version,
+                       e.error_messages
+                FROM {self.table} AS d
+                LEFT JOIN database_deamon_errors AS e ON e.id = d.id
+                ORDER BY d.id
+            """).fetchall()
+        finally:
+            connection.close()
 
         data = []
         for row in rows:
+            errors = json.loads(row["error_messages"]) if row["error_messages"] else {}
             data.append({
-                "id": row[0],
-                "name": row[1],
-                "status": row[2],
-                "last_updated": row[3]
+                "id": row["id"],
+                "name": row["name"],
+                "status": row["status"],
+                "importance": row["importance"],
+                "type": row["type"],
+                "last_updated": row["last_updated"],
+                "version": row["version"],
+                "errors": errors,
+                "problems": len(errors) if isinstance(errors, (dict, list)) else 0
             })
         return {"data": data}
 

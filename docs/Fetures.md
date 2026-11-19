@@ -12,13 +12,13 @@ Specialty:
     - limit the request to the essentials
 
 ## Func-Roadmap 
-- A Web-app that ennumerates all Docker Container on the server
+- A Web-app that ennumerates all Docker Container on the server 
 
-- Read out all logs appropriatly and transport it via a cpp src.
+- Read out all logs appropriatly and transport it via a cpp src. - done
 
-- Connect existing logic in cpp with the arcetecture
+- Connect existing logic in cpp with the arcetecture - done
 
-- Connect teh thing to a RAG PIpline with an API or ollama
+- Connect teh thing to a RAG PIpline with an API or ollama - done gemini
 
 - Filter hardcoded via DB
 

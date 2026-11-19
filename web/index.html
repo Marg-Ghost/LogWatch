@@ -1,17 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LogWatch</title>
+    <link rel="stylesheet" href="/web/main.css">
 </head>
 <body>
-    <section id="server_list">
-        <h1>Server Error-GArbage-Collector</h1>
-        <h2>Server List: </h2>
-    </section>
-    <section id="server_list">
+    <aside id="navbar" class="sidebar" aria-label="Hauptnavigation">
+        <a class="brand" href="/" aria-label="LogWatch Startseite">
+            <img class="brand-icon" src="/web/assets/logo.svg" alt="LogWatch">
+            <span>LogWatch</span>
+        </a>
+        <nav class="navigation">
+            <button class="nav-item active" type="button" data-view="processes">Processes</button>
+            <button class="nav-item" type="button" data-view="general">general</button>
+        </nav>
+    </aside>
 
-    </section>
-    <script src="web/main.js"></script>
+    <main>
+        <header id="header">
+            <h1>Docker-Container</h1>
+            <div class="toolbar">
+                <span id="load-status" role="status" aria-live="polite"></span>
+                <button id="reload" type="button">Reload</button>
+            </div>
+        </header>
+        <section id="main" aria-label="Docker-Container" aria-live="polite">
+            <!-- for each container tere will be a div -->
+        </section>
+        <section id="general-panel" class="general-panel" hidden>
+            <h2>general</h2>
+            <p id="general-summary"></p>
+        </section>
+    </main>
+    <aside id="container-details" class="details-panel" hidden aria-label="Container details">
+        <header class="details-header">
+            <h2 id="detail-title"></h2>
+            <button id="close-details" type="button" aria-label="Close details">x</button>
+        </header>
+        <section class="error-viewer" aria-label="Container errors">
+            <p id="error-message"></p>
+            <div class="error-controls">
+                <button id="previous-error" type="button" aria-label="Previous error">&lt;</button>
+                <span id="error-counter"></span>
+                <button id="next-error" type="button" aria-label="Next error">&gt;</button>
+            </div>
+        </section>
+        <h3 class="solution-heading">AI Answer</h3>
+        <section class="solution-viewer" aria-label="AI solution">
+            <p id="solution-text"></p>
+        </section>
+    </aside>
+    <div class="right-rail" aria-hidden="true">vvvvv</div>
+
+    <script src="/web/main.js"></script>
 </body>
 </html>

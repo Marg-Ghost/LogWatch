@@ -89,7 +89,7 @@ int ServerPort::Listener() {
     }
 
     std::cout << "[C++] Empfangen - ID: " << extracted_id << ", Type: " << extracted_type << std::endl;
-    this->buffer = extracted_id
+    this->buffer = extracted_id;
     return extracted_type;
 }
 
@@ -106,7 +106,7 @@ void ServerPort::back_to_original_controller(int opp_type, int back_to_server) {
     hints.ai_socktype = SOCK_STREAM; // TCP Strea m
 
     // Wichtig: KEIN AI_PASSIVE, weil wir hier als Client rausfunken!
-    int status = getaddrinfo("127.0.0.1", "8000", &hints, &servinfo);
+    int status = getaddrinfo("127.0.0.1", "9000", &hints, &servinfo);
     if (status != 0) {
         std::cerr << "[C++] getaddrinfo Fehler: " << gai_strerror(status) << std::endl;
         return;

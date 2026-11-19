@@ -103,8 +103,12 @@ vgl. Requesttypes : docs/Server_to_Docker.md
 - 1 = quickchecks every container for errors and sends back the result to the database
 - 2 = check if all server running are in the database
 """
+HOST = "127.0.0.1"
+PORT = 9876
 
 def reqeust_type_1():
+    global HOST
+    global PORT
     conn = sqlite3.connect("data/Docker.db")
     cursor = conn.cursor()
     cursor.execute("SELECT id, importance FROM database_deamon")
@@ -116,9 +120,6 @@ def reqeust_type_1():
     linked_list = linked_list.sort_by_importance()
 
     # For each Request to cpp socket:
-    HOST = "127.0.0.1"
-    PORT = 9876
-
     current = linked_list.head
     while current not None:
         payload = {"id": current.id, "type" : 1}
@@ -135,4 +136,14 @@ def reqeust_type_1():
     conn.close()
 
 def reqeust_type_2():
-    ...
+    global HOST
+    global PORT
+    payload = {"id": 0, "type" : 2}
+    json_payload = json.dumps(payload)
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            s.sendall(json_payload.encode("utf-8"))
+    
+    except Exception as e:
+        print(f"Error | connecting to server with Type: 2")
