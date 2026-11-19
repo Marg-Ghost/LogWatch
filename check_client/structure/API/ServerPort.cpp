@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <cstdint>
 //internal
 #include "ServerPort.h"
 #include "../ServerPort.h"

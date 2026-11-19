@@ -11,6 +11,8 @@
  *-> We will send a lot of requests to refresh the website server status and catch every error right away
  */
 
+#include <cstdint>
+
 class ServerPort {
 private:
     // status val

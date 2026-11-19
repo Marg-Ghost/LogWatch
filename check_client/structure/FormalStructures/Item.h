@@ -8,7 +8,7 @@
 
 class Item {
 private:
-    Item next;
+    Item* next;
     std::string data;
 public:
     Item(std::string error);

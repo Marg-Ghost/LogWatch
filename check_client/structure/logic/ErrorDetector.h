@@ -35,7 +35,7 @@ public:
      * -> 2 : 100% sent 10 str no need for further checks
      *  -> -1 : Error
      */
-    int detect_string(std::stirng test);
+    int detect_string(std::string test);
 
     //getter && setter
     float get_probability();

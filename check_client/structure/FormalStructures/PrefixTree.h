@@ -5,7 +5,7 @@
 #ifndef AWS_HACKATHAN_PREFIXTREE_H
 #define AWS_HACKATHAN_PREFIXTREE_H
 
-#include "Trienode"
+#include "TrieNode.h"
 
 class PrefixTree {
 private:
@@ -15,7 +15,7 @@ public:
     //actions
     void insert(std::string word);
     bool search(std::string word);
-    bool starts_with(std::stirng word);
+    bool starts_with(std::string word);
 };
 
 
