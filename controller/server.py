@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 #System
 import pathlib
+from sys_intel.get_sys_info import Dashboard
 
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -36,10 +37,21 @@ async def main_monitor():
         return HTTPException(status_code=404, detail=f"File {file_name} not found")
     return FileResponse(str(direction))
 
+@app.get("/general")
+async def general_monitor():
+    direction = WEBDIR / "general.html"
+    if not direction.exists():
+        raise HTTPException(status_code=404, detail="File general.html not found")
+    return FileResponse(str(direction))
+
 # Intel-getter
 @app.get("/load_all_servers")
 async def get_all_servers() -> dict[str, list[dict]]:
     return COMMON_DOCKER.get_docker_container_data()
+
+@app.get("/load_sys_info")
+async def get_sys_info() -> dict:
+    return Dashboard().get_all_data()
 
 # setter
 def set_all_servers():

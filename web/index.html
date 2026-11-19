@@ -13,8 +13,8 @@
             <span>LogWatch</span>
         </a>
         <nav class="navigation">
-            <button class="nav-item active" type="button" data-view="processes">Processes</button>
-            <button class="nav-item" type="button" data-view="general">general</button>
+            <a class="nav-item active" href="/" aria-current="page">Processes</a>
+            <a class="nav-item" href="/general">general</a>
         </nav>
     </aside>
 
@@ -28,10 +28,6 @@
         </header>
         <section id="main" aria-label="Docker-Container" aria-live="polite">
             <!-- for each container tere will be a div -->
-        </section>
-        <section id="general-panel" class="general-panel" hidden>
-            <h2>general</h2>
-            <p id="general-summary"></p>
         </section>
     </main>
     <aside id="container-details" class="details-panel" hidden aria-label="Container details">

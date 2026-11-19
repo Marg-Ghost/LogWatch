@@ -72,6 +72,7 @@ body {
     cursor: pointer;
     font: inherit;
     font-size: 12px;
+    text-decoration: none;
 }
 
 .nav-item::before {
@@ -207,12 +208,8 @@ main {
     color: #ff8a8a;
 }
 
-.general-panel {
-    max-width: 665px;
-    margin: 0 0 20px 12px;
-    padding: 14px;
-    background: var(--card-color);
-    color: var(--text-color);
+.general-page #header {
+    max-width: 1000px;
 }
 
 .details-panel {
@@ -230,7 +227,6 @@ main {
     box-shadow: -26px 0 #333333;
 }
 
-.general-panel h2,
 .details-panel h2,
 .details-panel h3 {
     margin-top: 0;
@@ -319,6 +315,68 @@ main {
 .solution-viewer p {
     margin: 0;
     overflow-wrap: anywhere;
+}
+
+.system-grid {
+    display: grid;
+    max-width: 1000px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.system-card {
+    min-width: 0;
+    padding: 16px;
+    background: var(--card-color);
+    color: var(--text-color);
+}
+
+.system-card h2 {
+    margin: 0 0 14px;
+    border-bottom: 1px solid #999999;
+    padding-bottom: 7px;
+    font-size: 19px;
+    font-weight: 400;
+}
+
+.system-values {
+    display: grid;
+    gap: 9px;
+}
+
+.system-value {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    overflow-wrap: anywhere;
+}
+
+.system-value span:last-child {
+    text-align: right;
+}
+
+.system-meter {
+    display: grid;
+    gap: 4px;
+    margin-top: 12px;
+}
+
+.system-meter progress {
+    width: 100%;
+    height: 12px;
+    accent-color: #168b35;
+}
+
+.system-meter-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.system-empty {
+    margin: 0;
+    color: #555555;
 }
 
 .right-rail {

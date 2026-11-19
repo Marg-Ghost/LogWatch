@@ -1,7 +1,6 @@
 const containerList = document.getElementById("main");
 const loadStatus = document.getElementById("load-status");
 const detailsPanel = document.getElementById("container-details");
-const currentViewButtons = document.querySelectorAll(".nav-item");
 
 let containers = [];
 let selectedContainer = null;
@@ -74,7 +73,6 @@ async function load_all_server(){
             containerList.appendChild(card);
         }
 
-        update_general_summary();
         loadStatus.textContent = `${containers.length} containers loaded`;
     } catch (error) {
         containerList.replaceChildren();
@@ -150,22 +148,6 @@ function render_selected_error() {
         selectedContainer.solution || selectedContainer.ai_answer || "No AI answer available.";
 }
 
-function update_general_summary() {
-    const totalProblems = containers.reduce((total, container) => total + get_problem_count(container), 0);
-    document.getElementById("general-summary").textContent =
-        `${containers.length} Docker-Container, ${totalProblems} Problems`;
-}
-
-function change_view(view) {
-    const showProcesses = view === "processes";
-    containerList.hidden = !showProcesses;
-    document.getElementById("general-panel").hidden = showProcesses;
-    detailsPanel.hidden = true;
-    currentViewButtons.forEach((button) => {
-        button.classList.toggle("active", button.dataset.view === view);
-    });
-}
-
 document.getElementById("reload").addEventListener("click", load_all_server);
 document.getElementById("close-details").addEventListener("click", () => {
     detailsPanel.hidden = true;
@@ -178,8 +160,4 @@ document.getElementById("next-error").addEventListener("click", () => {
     selectedErrorIndex += 1;
     render_selected_error();
 });
-currentViewButtons.forEach((button) => {
-    button.addEventListener("click", () => change_view(button.dataset.view));
-});
-
 load_all_server();
