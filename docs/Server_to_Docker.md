@@ -129,4 +129,6 @@ cmake --build check_client/build --parallel
 
 Die Konfiguration enthält alle C++-Quelldateien und bindet SQLite ein. Sie
 beschreibt den Build, bestätigt aber noch keinen erfolgreichen Build oder
-End-to-End-Test auf dem Debian-Zielsystem.
+End-to-End-Test auf dem Debian-Zielsystem. Zum Bauen sollte der CMake-Target
+verwendet werden, nicht `g++ main.cpp` allein: Der Target kompiliert auch die
+Implementierungsdateien und bindet SQLite ein.

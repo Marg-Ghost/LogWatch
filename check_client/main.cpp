@@ -2,6 +2,7 @@
 #include <iostream>
 #include<fstream>
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 //internal
 #include "structure/API/Database.h"
@@ -11,7 +12,7 @@
 #include "structure/FormalStructures/Item.h"
 #include "structure/API/ServerPort.h"
 
-std::vector<std::string> get_container();
+std::vector<std::string> get_container_names();
 float get_error_eval_on_container(std::string docker_name, DockerSystem docker);
 
 
@@ -35,7 +36,7 @@ int main() {
              * somit docht #1-Type ist hier case 1
              * ...
              */
-            case 1:
+            case 1: {
                 //json mit der DB vergleichen ID -> In Docker
                 std::string docker_name = database.get_name_from_id(id);
                 //get error probability
@@ -44,7 +45,7 @@ int main() {
                 docker.fill_stack_with_log();
                 float error_probability = get_error_eval_on_container(docker_name, docker);
 
-                int number_message;
+                int number_message = 0;
                 if (error_probability < 0.3) {
                     docker.crop_stack(0);
                     number_message = 0;
@@ -57,7 +58,7 @@ int main() {
                     docker.crop_stack(5);
                     number_message = 5;
                     back_to_server = 1;
-                }else if (error_probability > 0.8) {
+                }else if (error_probability >= 0.8) {
                     docker.crop_stack(10);
                     number_message = 10;
                     back_to_server = 1;
@@ -72,13 +73,16 @@ int main() {
                 //return to http server python
                 database.save_error_entry(id, errors);
                 server.back_to_original_controller(opp_type, back_to_server);
-            case 2:
-                std::vector<std::string> docker_deamon = get_container();
+                break;
+            }
+            case 2: {
+                std::vector<std::string> docker_deamon = get_container_names();
                 //database
                 database.save_docker_name(docker_deamon);
                 server.back_to_original_controller(opp_type, 0);
+                break;
+            }
         }
-        return 0;
     }
 }
 float get_error_eval_on_container(std::string docker_name, DockerSystem docker) {
